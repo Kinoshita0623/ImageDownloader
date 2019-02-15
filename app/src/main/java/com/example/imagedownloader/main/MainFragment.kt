@@ -7,10 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ListView
+import android.widget.*
 import com.example.imagedownloader.R
 import com.example.imagedownloader.data.ImageData
 
@@ -28,7 +25,6 @@ class MainFragment : Fragment(), MainContract.View {
     private lateinit var saveButton: Button
 
     override fun setPresenter(presenter: MainContract.Presenter) {
-        Log.d("Fragment", "Presenterをセットした")
         mPresenter = presenter
     }
 
@@ -96,7 +92,9 @@ class MainFragment : Fragment(), MainContract.View {
 
     }
 
-    override fun whenSavedImage() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun showResultTransaction(msg: String) {
+        Toast.makeText(activity!!.applicationContext, msg, Toast.LENGTH_LONG).show()
     }
+
+
 }

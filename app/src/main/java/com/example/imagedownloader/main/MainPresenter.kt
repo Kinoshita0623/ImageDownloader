@@ -8,6 +8,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.example.imagedownloader.data.ImageData
 import com.example.imagedownloader.data.RemoteImageDownloader
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 
 class MainPresenter(private val mainView: MainContract.View) :
     MainContract.Presenter {
@@ -52,13 +55,30 @@ class MainPresenter(private val mainView: MainContract.View) :
 
     //ImageDataListのチェックボックスから得たBoolean値からTrueのデータだけ保存する
     override fun saveImage() {
-        if(imageDataList != null){
-            imageDataList?.
-                filter{it.isSave }?.
-                forEach{
-                    Log.d("SELECTED IMAGE", it.imageURL)
-                }
+        val mImageDataList = imageDataList
+        if(mImageDataList == null){
+            return
+        }else if(mImageDataList.isEmpty()){
+            return
         }
+
+        val saveImageList = mImageDataList.filter{
+            it.isSave
+        }.map{
+            it.asyncBitmap
+        }
+        val remoteImage = RemoteImageDownloader()
+        GlobalScope.launch{
+
+            val imageSavedResult = remoteImage.saveImageForList(saveImageList).awaitAll()
+            val successCount = imageSavedResult.count{
+                it
+            }
+            handler.post{
+                mainView.showResultTransaction("${saveImageList.size}件中${successCount}件の画像の保存に成功しました")
+            }
+        }
+
 
     }
 

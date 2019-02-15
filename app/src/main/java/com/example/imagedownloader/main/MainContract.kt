@@ -10,10 +10,8 @@ interface MainContract {
         fun showWebView()
         fun showImageList(imgList: List<ImageData>)
         fun showDetailedImage()
-        fun whenSavedImage()
+        fun showResultTransaction(msg: String)
         fun showMainView()
-
-
     }
 
     interface Presenter : BasePresenter {
@@ -22,6 +20,5 @@ interface MainContract {
         fun saveImage()
         fun getImageForList(urlList: List<String>)
         fun setImageDataList(imgDataList: List<ImageData>)
-
     }
 }

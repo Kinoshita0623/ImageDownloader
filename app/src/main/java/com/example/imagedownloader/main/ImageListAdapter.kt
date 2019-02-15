@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class ImageListAdapter(private val context: Context, private val layoutId: Int, private val imageDataList: List<ImageData>) : BaseAdapter() {
 
-    data class ViewHolder(val checkBox: CheckBox, val imageView: ImageView, val textView: TextView)
+    data class ViewHolder(val imageView: ImageView, val textView: TextView)
 
     private var inflater = LayoutInflater.from(context)
 
@@ -35,27 +35,19 @@ class ImageListAdapter(private val context: Context, private val layoutId: Int, 
     }
 
     override fun getView(position: Int, convertViewTmp: View?, parent: ViewGroup?): View {
-        var convertView = convertViewTmp
+        var view = convertViewTmp
         val holder: ViewHolder
 
-        if(convertView == null){
-            convertView = inflater.inflate(layoutId, null)
+        if(view == null){
+            view = inflater.inflate(layoutId, null)
 
-            //FIXME 関係のないチェックボックスにチェックが入ってしまう不具合がある
-            val ch: CheckBox = convertView!!.findViewById(R.id.checkBox)
-            ch.setOnCheckedChangeListener { buttonView, isChecked ->
-                //CheckListなどに保存する
-                imageDataList[position].isSave = isChecked
-                Log.d("SELECTED IMG", imageDataList[position].imageURL)
-            }
             holder = ViewHolder(
-                ch,
-                convertView.findViewById(R.id.imageView),
-                convertView.findViewById(R.id.imageDescription)
+                view.findViewById(R.id.imageView),
+                view.findViewById(R.id.imageDescription)
             )
-            convertView.tag = holder
+            view.tag = holder
         }else{
-            holder = convertViewTmp!!.tag as ViewHolder
+            holder = view.tag as ViewHolder
         }
 
         val handler = Handler()
@@ -79,7 +71,15 @@ class ImageListAdapter(private val context: Context, private val layoutId: Int, 
         }catch(e: Exception){
             throw e
         }
-        return convertView
+
+        val ch: CheckBox = view!!.findViewById(R.id.checkBox)
+        ch.setOnCheckedChangeListener { _, isChecked ->
+            //CheckListなどに保存する
+            imageDataList[position].isSave = isChecked
+        }
+        ch.isChecked = imageDataList[position].isSave
+
+        return view
 
     }
 
