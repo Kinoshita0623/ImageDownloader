@@ -93,7 +93,9 @@ class MainPresenter(private val mainView: MainContract.View) :
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
 
+            Log.d("PageFinished", "ページが読み込まれた")
             view?.loadUrl(LOAD_IMAGE_JS_CODE)
+
         }
     }
 

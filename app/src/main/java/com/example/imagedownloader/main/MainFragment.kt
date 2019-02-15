@@ -1,5 +1,7 @@
 package com.example.imagedownloader.main
 
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -16,11 +18,14 @@ class MainFragment : Fragment(), MainContract.View {
     private lateinit var mPresenter: MainContract.Presenter
 
     private lateinit var loadUrlButton: Button
+    private lateinit var pasteButton: Button
     private lateinit var inputUrlBox: EditText
     private lateinit var imageViewList: ListView
     private lateinit var inputInterfaceLayout: LinearLayout
     private lateinit var buttonLayoutView: LinearLayout
+
     private lateinit var webView: WebView
+    private lateinit var cancelButton: Button
 
     private lateinit var saveButton: Button
 
@@ -37,17 +42,28 @@ class MainFragment : Fragment(), MainContract.View {
         super.onViewCreated(view, savedInstanceState)
 
         loadUrlButton = view.findViewById(R.id.loadURLButton)
+        pasteButton = view.findViewById(R.id.pasteButton)
         inputUrlBox = view.findViewById(R.id.inputURL)
         imageViewList = view.findViewById(R.id.imageListView)
         inputInterfaceLayout = view.findViewById(R.id.inputInterfaceLayout)
         buttonLayoutView = view.findViewById(R.id.buttonLayoutView)
         webView = view.findViewById(R.id.webView)
+        cancelButton = view.findViewById(R.id.cancelButton)
 
         saveButton = view.findViewById(R.id.saveButton)
 
         loadUrlButton.setOnClickListener{
             val inputUrl = inputUrlBox.text.toString()
             mPresenter.loadWebView(inputUrl, webView)
+        }
+
+        //WebViewをキャンセルする
+        cancelButton.setOnClickListener{
+            visibleMainView()
+        }
+
+        pasteButton.setOnClickListener{
+            inputUrlBox.setText(getClipboardText())
         }
 
         saveButton.setOnClickListener{
@@ -60,6 +76,8 @@ class MainFragment : Fragment(), MainContract.View {
         imageViewList.visibility = View.GONE
         inputInterfaceLayout.visibility = View.GONE
         buttonLayoutView.visibility = View.GONE
+        saveButton.visibility = View.GONE
+        cancelButton.visibility = View.VISIBLE
     }
 
     private fun visibleMainView(){
@@ -67,6 +85,13 @@ class MainFragment : Fragment(), MainContract.View {
         imageViewList.visibility = View.VISIBLE
         inputInterfaceLayout.visibility = View.VISIBLE
         buttonLayoutView.visibility = View.VISIBLE
+        saveButton.visibility = View.VISIBLE
+        cancelButton.visibility = View.GONE
+    }
+
+    private fun getClipboardText():String{
+        val cm = activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        return cm.primaryClip.getItemAt(0).text.toString()
     }
 
     override fun showMainView() {

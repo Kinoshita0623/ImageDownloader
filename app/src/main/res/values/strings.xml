@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Web画像保存</string>
+    <string name="cancelButtonString">中止する</string>
+    <string name="saveButtonString">保存</string>
+    <string name="startGettingImageButton">画像取得開始</string>
+    <string name="pasteButtonString">貼り付け</string>
+    <string name="textURL">URL</string>
 </resources>

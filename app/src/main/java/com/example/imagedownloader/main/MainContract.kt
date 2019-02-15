@@ -16,6 +16,7 @@ interface MainContract {
 
     interface Presenter : BasePresenter {
         fun loadWebView(url: String, webView: WebView)
+        //fun cancelWebView()
         fun getImage(url: String)
         fun saveImage()
         fun getImageForList(urlList: List<String>)
