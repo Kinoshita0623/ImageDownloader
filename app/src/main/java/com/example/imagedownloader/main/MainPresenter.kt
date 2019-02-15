@@ -10,6 +10,7 @@ import com.example.imagedownloader.data.ImageData
 import com.example.imagedownloader.data.RemoteImageDownloader
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainPresenter(private val mainView: MainContract.View) :
@@ -27,6 +28,8 @@ class MainPresenter(private val mainView: MainContract.View) :
                 "        urlString += imgList[i].getAttribute(\"src\") + \",\";\n" +
                 "   }\n" +
                 "   ImageLoader.getImgUrl(urlString);"
+
+        const val SCROLL_PAGE_JS_CODE = "javascript:window.scrollBy(0,500);"
     }
     override fun start() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -94,7 +97,25 @@ class MainPresenter(private val mainView: MainContract.View) :
             super.onPageFinished(view, url)
 
             Log.d("PageFinished", "ページが読み込まれた")
-            view?.loadUrl(LOAD_IMAGE_JS_CODE)
+
+            //Webページのレンダリングと別スレッドで実行したいので非同期で実行している
+            GlobalScope.launch{
+                for(n in 0..500){
+                    delay(7)
+                    handler.post{
+                        //読み込まれたページをスクロールする
+                        view?.loadUrl(SCROLL_PAGE_JS_CODE)
+                    }
+                }
+
+                handler.post{
+                    view?.loadUrl(LOAD_IMAGE_JS_CODE)
+                }
+
+            }
+
+            //Thread.sleep(2000)
+
 
         }
     }
